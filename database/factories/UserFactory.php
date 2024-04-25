@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\DialCode;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -27,7 +28,9 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'phone_dial_code' => fake()->randomElement(DialCode::all()->pluck('id')),
+            'phone_number' => fake()->numerify('8##########'),
+            'password' => Hash::make('12345678'),
             'remember_token' => Str::random(10),
         ];
     }

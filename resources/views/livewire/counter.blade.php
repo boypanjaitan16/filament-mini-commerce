@@ -15,7 +15,7 @@
     <p>Title character length: <span x-text="$wire.title.length"></span></p>
     <hr />
     <x-filament::badge>
-        New
+        Bli Erik
     </x-filament::badge>
     <hr />
     <x-filament::breadcrumbs :breadcrumbs="[

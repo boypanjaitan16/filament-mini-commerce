@@ -4,14 +4,20 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\DialCode;
+use App\Models\Role;
 use App\Models\User;
+use App\Tables\Columns\MultipleBadgesColumn;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Log;
 
 class UserResource extends Resource
 {
@@ -26,32 +32,58 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                SpatieMediaLibraryFileUpload::make('avatar')
+                    ->collection('avatars')
+                    ->conversion('small')
+                    ->required()
+                    ->image()
+                    ->avatar()
+                    ->imageEditor()
+                    ->circleCropper()
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('phone_dial_code')
-                    ->tel()
-                    ->maxLength(5),
+                Forms\Components\DateTimePicker::make('email_verified_at')
+                    ->label('Email Verified')
+                    ->native(false),
+                Forms\Components\Select::make('phone_dial_code')
+                    ->relationship(name: 'dialCode', titleAttribute: 'name')
+                    ->getOptionLabelFromRecordUsing(fn (DialCode $record) => "(+{$record->id}) {$record->name}")
+                    ->native(false)
+                    ->searchable()
+                    ->preload()
+                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('phone_number')
                     ->tel()
                     ->maxLength(12),
-                Forms\Components\DateTimePicker::make('phone_number_verified_at'),
+                Forms\Components\DateTimePicker::make('phone_number_verified_at')
+                    ->label('Phone Number Verified')
+                    ->native(false),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required()
-                    ->maxLength(255),
-            ]);
+                    ->revealable()
+                    ->hiddenOn('edit')
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('avatar')
+                    ->collection('avatars')
+                    ->conversion('small')
+                    ->circular()
+                    ->placeholder('No avatar'),
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
@@ -66,10 +98,10 @@ class UserResource extends Resource
                     ->label('Phone Number')
                     ->searchable()
                     ->state(function (User $user): string | null {
-                        if(!$user->phone_number){
+                        if (!$user->phone_number) {
                             return null;
                         }
-                        return "($user->phone_dial_code) $user->phone_number";
+                        return "(+$user->phone_dial_code) $user->phone_number";
                     }),
                 Tables\Columns\IconColumn::make('is_phone_verified')
                     ->label('Phone Verified')

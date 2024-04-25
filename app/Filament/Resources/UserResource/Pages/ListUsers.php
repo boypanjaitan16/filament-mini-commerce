@@ -22,11 +22,13 @@ class ListUsers extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make(),
-            'active' => Tab::make()->label('Verified')
-                ->modifyQueryUsing(fn (Builder $query) => $query->whereNotNull('email_verified_at')),
-            'inactive' => Tab::make()->label('Not Verified')
-                ->modifyQueryUsing(fn (Builder $query) => $query->whereNull('email_verified_at')),
+            'All' => Tab::make(),
+            'Admin' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereHasRole('admin')),
+            'Marketing' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereHasRole('marketing')),
+            'Consument' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereHasRole('consument')),
         ];
     }
 }
