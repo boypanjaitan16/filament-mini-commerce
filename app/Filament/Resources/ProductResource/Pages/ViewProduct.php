@@ -39,7 +39,7 @@ class ViewProduct extends ViewRecord
                             })
                             ->columnSpanFull(),
                         Infolists\Components\TextEntry::make('name'),
-                        Infolists\Components\TextEntry::make('price')->prefix('Rp'),
+                        Infolists\Components\TextEntry::make('price')->money('IDR'),
                         Infolists\Components\KeyValueEntry::make('specification')
                             ->state(function (Product $product) {
                                 if (!$product->specification) {

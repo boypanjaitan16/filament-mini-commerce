@@ -92,6 +92,11 @@ class User extends Authenticatable implements LaratrustUser, FilamentUser, HasMe
         return $this->belongsTo(DialCode::class, 'phone_dial_code', 'id');
     }
 
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'user_id', 'id');
+    }
+
     public function addresses(): HasMany
     {
         return $this->hasMany(Address::class, 'user_id', 'id');

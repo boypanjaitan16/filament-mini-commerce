@@ -42,12 +42,6 @@ class ProductCategoryResource extends Resource
                     ->native(false)
                     ->label('Parent Category')
                     ->createOptionForm([
-                        Forms\Components\Select::make('parent_id')
-                            ->options(ProductCategory::all()->pluck('name', 'id'))
-                            ->preload()
-                            ->searchable()
-                            ->native(false)
-                            ->label('Parent Category'),
                         Forms\Components\TextInput::make('name')
                             ->label('Category Name')
                             ->required()
@@ -58,7 +52,8 @@ class ProductCategoryResource extends Resource
                     ])
                     ->createOptionUsing(function (array $data): int {
                         return ProductCategory::create($data)->getKey();
-                    }),
+                    })
+                    ->createOptionModalHeading('Create Parent Category'),
                 Forms\Components\TextInput::make('name')
                     ->label('Category Name')
                     ->required()
