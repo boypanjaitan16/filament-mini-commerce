@@ -11,7 +11,7 @@ services:
     volumes:
       - ./docker/db:/var/lib/mysql
     ports:
-      - 3309:3306
+      - 3307:3306
     networks:
       - my-bridge-network
 

@@ -16,4 +16,9 @@ npm-debug.log
 yarn-error.log
 /.fleet
 /.idea
+<<<<<<< HEAD
 /docker
+=======
+/.vscode
+/docker/db
+>>>>>>> 52c4eb5388c6bd4d5414b0bfce73ee8ff4b6179c
